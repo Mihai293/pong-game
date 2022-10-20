@@ -1,0 +1,62 @@
+Index: pong.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import turtle\r\n\r\nwn = turtle.Screen()\r\nwn.title(\"Pong ai\")\r\nwn.bgcolor(\"black\")\r\nwn.setup(width=800, height=600)\r\nwn.tracer(0)\r\n\r\n\r\n# Paddle A\r\npaddle_a = turtle.Turtle()\r\npaddle_a.speed(0)\r\npaddle_a.shape('square')\r\npaddle_a.color('white')\r\npaddle_a.shapesize(stretch_wid=5, stretch_len=1)\r\npaddle_a.penup()\r\npaddle_a.goto(-350,0)\r\n\r\n# Paddle B\r\npaddle_b = turtle.Turtle()\r\npaddle_b.speed(0)\r\npaddle_b.shape('square')\r\npaddle_b.color('white')\r\npaddle_b.shapesize(stretch_wid=5, stretch_len=1)\r\npaddle_b.penup()\r\npaddle_b.goto(350,0)\r\n\r\n# Ball\r\nball = turtle.Turtle()\r\nball.speed(0)\r\nball.shape('circle')\r\nball.color('white')\r\nball.shapesize(stretch_wid=0.8, stretch_len=0.8)\r\nball.penup()\r\nball.goto(0,0)\r\n# Move by 2 pixel\r\nball.dx = 0.2\r\nball.dy = 0.2\r\n\r\n#\r\n\r\n# Function\r\ndef paddle_a_up():\r\n    y = paddle_a.ycor()\r\n    y += 20\r\n    paddle_a.sety(y)\r\n\r\ndef paddle_a_down():\r\n    y = paddle_a.ycor()\r\n    y -= 20\r\n    paddle_a.sety(y)\r\n\r\ndef paddle_b_up():\r\n    y = paddle_b.ycor()\r\n    y += 20\r\n    paddle_b.sety(y)\r\n\r\ndef paddle_b_down():\r\n    y = paddle_b.ycor()\r\n    y -= 20\r\n    paddle_b.sety(y)\r\n\r\n# Key\r\nwn.listen()\r\nwn.onkeypress(paddle_a_up, \"w\")\r\nwn.onkeypress(paddle_a_down, \"s\")\r\nwn.onkeypress(paddle_b_up, \"Up\")\r\nwn.onkeypress(paddle_b_down, \"Down\")\r\n\r\n# Game loop\r\nwhile True:\r\n    wn.update()\r\n\r\n    # Move the ball\r\n    ball.setx(ball.xcor() + ball.dx) # for right-left\r\n    ball.sety(ball.ycor() + ball.dy) # for up-down\r\n\r\n    #Border\r\n    if ball.ycor() > 290:\r\n        ball.sety(290)\r\n        ball.dy *= -1\r\n\r\n    if ball.ycor() < -290:\r\n        ball.sety(-290)\r\n        ball.dy *= -1\r\n\r\n    if ball.xcor() > 390:\r\n        ball.goto(0, 0)\r\n        ball.dx *= -1\r\n\r\n    if ball.xcor() < -390:\r\n        ball.goto(0, 0)\r\n        ball.dx *= -1\r\n\r\n    # Paddle and ball collisions\r\n    if ball.xcor() > 340 and (ball.ycor() < paddle_b.ycor() + 50 and ball.ycor() > paddle_b.ycor() - 50):\r\n        ball.dx *= -1
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pong.py b/pong.py
+--- a/pong.py	(revision fdb4c6c8a845f7a9b7fab18e07a99dc41b125f92)
++++ b/pong.py	(date 1666289706656)
+@@ -6,6 +6,9 @@
+ wn.setup(width=800, height=600)
+ wn.tracer(0)
+ 
++# Score
++score_a = 0
++score_b = 0
+ 
+ # Paddle A
+ paddle_a = turtle.Turtle()
+@@ -37,7 +40,15 @@
+ ball.dx = 0.2
+ ball.dy = 0.2
+ 
+-#
++# Pen
++pen = turtle.Turtle()
++pen.speed(0)
++pen.color("white")
++pen.penup()
++pen.hideturtle()
++pen.goto(0, 260)
++pen.write("Player A: 0 Player B: 0", align='center', font=("Courier", 18, 'normal'))
++
+ 
+ # Function
+ def paddle_a_up():
+@@ -87,11 +98,22 @@
+     if ball.xcor() > 390:
+         ball.goto(0, 0)
+         ball.dx *= -1
++        score_a += 1
++        pen.clear()
++        pen.write(f"Player A: {score_a} Player B: {score_b}", align='center', font=("Courier", 18, 'normal'))
+ 
+     if ball.xcor() < -390:
+         ball.goto(0, 0)
+         ball.dx *= -1
++        score_b += 1
++        pen.clear()
++        pen.write(f"Player A: {score_a} Player B: {score_b}", align='center', font=("Courier", 18, 'normal'))
+ 
+     # Paddle and ball collisions
+-    if ball.xcor() > 340 and (ball.ycor() < paddle_b.ycor() + 50 and ball.ycor() > paddle_b.ycor() - 50):
++    if (ball.xcor() > 340 and ball.xcor() < 350) and (ball.ycor() < paddle_b.ycor() + 40 and ball.ycor() > paddle_b.ycor() - 40):
++        ball.setx(340)
++        ball.dx *= -1
++
++    if (ball.xcor() < -340 and ball.xcor() > -350) and (ball.ycor() < paddle_a.ycor() + 40 and ball.ycor() > paddle_a.ycor() - 40):
++        ball.setx(-340)
+         ball.dx *= -1
+\ No newline at end of file
